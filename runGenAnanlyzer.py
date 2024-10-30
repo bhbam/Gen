@@ -6,10 +6,10 @@ cfg='GenAnalyzer/python/conFig_cfg.py'
 # inputFiles_='file:root://cmsxrootd.fnal.gov//store/user/bhbam/MCGeneration/Unboosted_gen_HToAATo4Tau_Hadronic_tauDR0p4_M8_ctau0To3_eta0To2p4_pythia8_2018UL_lessPerFile/crab_Unboosted_gen_HToAATo4Tau_Hadronic_tauDR0p4_M8_ctau0To3_eta0To2p4_pythia8_2018UL_lessPerFile/240103_211550/0000/Unboosted_GEN_HToAAToTauTau_M8_2018UL_15.root'
 # inputFiles_='file:/uscms/home/bbbam/nobackup/analysis/MCGeneration/CMSSW_10_6_20/src/MCProduction_with_trigger/GEN_SIM_DIGI_HToAATo4Tau_M5.root'
 # inputFiles_='file:root://cmsxrootd.fnal.gov//store/group/lpcml/bbbam/MCGeneration/signal_withTrigger/GEN_PreMix_HToAATo4Tau_M_3p7_pythia8_2018UL/sim_HToAATo4Tau_M_3p7/240407_130328/0000/AODSIM_HToAATo4Tau_777.root'
-inputFiles_='file:/uscms/home/bbbam/nobackup/analysis_run3/MCGeneration/CMSSW_13_0_17/src/MCProduction_run3/E2E-ATo2Tau/aToTauTau_m3p6To14p8_pt30To200_GEN_SIM.root'
+inputFiles_='file:/uscms/home/bbbam/nobackup/analysis_run3/MCGeneration/CMSSW_13_0_17/src/MCProduction_run3/E2E-ATo2Tau/aToTauTau_m1p2To3p6_pt30To300_GEN_SIM.root'
 maxEvents_=-1
 skipEvents_=0#
-outputFile_='GenInfo_only_A_2Tau.root'
+outputFile_='GenInfo_only_A_2Tau_m3p2To3p6_pt30To300_noOCC_varing_dR.root'
 cmd="cmsRun %s inputFiles=%s maxEvents=%d skipEvents=%d outputFile=%s"%(cfg,inputFiles_,maxEvents_,skipEvents_,outputFile_)
 print(cmd)
 os.system(cmd)

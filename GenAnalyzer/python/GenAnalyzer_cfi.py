@@ -4,8 +4,8 @@ from RecoMET.METProducers.METSignificanceParams_cfi import METSignificanceParams
 
 fevt = cms.EDAnalyzer('GenAnalyzer'
 
-, isDebug                        = cms.bool(True)
-, print_trigger                  = cms.bool(True)
+, isDebug                        = cms.bool(False)
+, print_trigger                  = cms.bool(False)
 
 ,genParticles    = cms.InputTag('genParticles',"","")
 ,ak8GenJets    = cms.InputTag('ak8GenJets',"","")

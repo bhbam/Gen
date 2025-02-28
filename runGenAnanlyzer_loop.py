@@ -10,7 +10,8 @@ inputFiles = []
 
 for i in range(1,101):
     # file = f"root://xrootd.unl.edu//store/group/phys_diffraction/rchudasa/MCGeneration/HToAATo4Tau_M3p7_Run3_2023/3p7_AODSIM/240911_121009/0000/step3_AODSIM_{i}.root"
-    file = f"root://xrootd.unl.edu//store/group/phys_diffraction/rchudasa/MCGeneration/HToAATo4Tau_M14_Run3_2023/14_AODSIM/240911_120940/0000/step3_AODSIM_{i}.root"
+    # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M3p7_Run3_2023/3p7_AODSIM_newBigProd/250113_144409/0000/step3_AODSIM_{i}.root"
+    file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M14_Run3_2023/signal_Mass_14_AODSIM_multiThreads/250111_025512/0000/step3_AODSIM_M14_{i}.root"
     inputFiles.append(file)
 # print(inputFiles)
 
@@ -27,5 +28,7 @@ def run_cmsRun(input_root):
 
 # Parallel execution using ProcessPoolExecutor
 if __name__ == "__main__":
-    with ProcessPoolExecutor(max_workers=8) as executor:  # Using 8 cores
+    with ProcessPoolExecutor(max_workers=4) as executor:  # Using 8 cores
         executor.map(run_cmsRun, inputFiles)
+# To run
+# nohup python3 runGenAnanlyzer_loop.py > gen_M3p7.log 2>&1 &

@@ -183,6 +183,7 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
 {
   isDebug  = iConfig.getParameter<bool>("isDebug");
   print_trigger  = iConfig.getParameter<bool>("print_trigger");
+  // selected_trgName  = iConfig.getParameter<std::string>("selected_trgName");
 
    //now do what ever initialization is needed
    RHTree = fs->make<TTree>("RHTree","Gen info Tree");
@@ -415,6 +416,7 @@ float Tau3_Tau4_dphi = -1111.1111;
 
 
 bool pass = false;
+
 for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); iGen != genParticles->end(); ++iGen) {
 
   if ( abs(iGen->pdgId()) != 35 || iGen->numberOfDaughters() != 2 || iGen->daughter(0)->pdgId() != 25 || iGen->daughter(1)->pdgId() != 25 ) continue;
@@ -486,27 +488,27 @@ for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); i
   Tau3_Tau4_deta = abs(Tau3_eta-Tau4_eta);
   Tau3_Tau4_dphi = abs(Tau3_phi-Tau4_phi);
 
-
-  // std::cout << "  >>>>>> Higgs gen (35) <<<<<"<<"<<< status: "<<iGen->status()<<"<<<pt:  "<<iGen->pt()<<"<<<eta:  "<<iGen->eta()<<"<<<phi:  "<<iGen->phi()<<"<<<mass:  "<<iGen->mass() << std::endl;
-  // std::cout << "  >>>>>> Higgs LorentzVector (35) <<<<<"<<"<<<mass:  "<<GenHiggs.M() << std::endl;
-  // std::cout << "  >>>>>> A1 gen (25) <<<<<"<<"<<< status: "<<iGen->daughter(0)->status()<<"<<<pt:  "<<iGen->daughter(0)->pt()<<"<<<eta:  "<<iGen->daughter(0)->eta()<<"<<<phi:  "<<iGen->daughter(0)->phi()<<"<<<mass:  "<<iGen->daughter(0)->mass() << std::endl;
-  // std::cout << "  >>>>>> A1 LorentzVector (25) <<<<<"<<"<<<mass:  "<< GenA1.M() << std::endl;
-  // std::cout << "  >>>>>> A2 gen (25) <<<<<"<<"<<< status: "<<iGen->daughter(1)->status()<<"<<<pt:  "<<iGen->daughter(1)->pt()<<"<<<eta:  "<<iGen->daughter(1)->eta()<<"<<<phi:  "<<iGen->daughter(1)->phi()<<"<<<mass:  "<<iGen->daughter(1)->mass() << std::endl;
-  // std::cout << "  >>>>>> A2 LorentzVector (25) <<<<<"<<"<<<mass:  "<< GenA2.M() << std::endl;
-  // std::cout << "  >>>>>> Tau1 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(0)->daughter(0)->status()<<"<<<pt:  "<<iGen->daughter(0)->daughter(0)->pt()<<"<<<eta:  "<<iGen->daughter(0)->daughter(0)->eta()<<"<<<phi:  "<<iGen->daughter(0)->daughter(0)->phi()<<"<<<mass:  "<<iGen->daughter(0)->daughter(0)->mass() << std::endl;
-  // std::cout << "  >>>>>> Tau2 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(0)->daughter(1)->status()<<"<<<pt:  "<<iGen->daughter(0)->daughter(1)->pt()<<"<<<eta:  "<<iGen->daughter(0)->daughter(1)->eta()<<"<<<phi:  "<<iGen->daughter(0)->daughter(1)->phi()<<"<<<mass:  "<<iGen->daughter(0)->daughter(1)->mass() << std::endl;
-  // std::cout << "  >>>>>> Tau3 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(1)->daughter(0)->status()<<"<<<pt:  "<<iGen->daughter(1)->daughter(0)->pt()<<"<<<eta:  "<<iGen->daughter(1)->daughter(0)->eta()<<"<<<phi:  "<<iGen->daughter(1)->daughter(0)->phi()<<"<<<mass:  "<<iGen->daughter(1)->daughter(0)->mass() << std::endl;
-  // std::cout << "  >>>>>> Tau4 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(1)->daughter(1)->status()<<"<<<pt:  "<<iGen->daughter(1)->daughter(1)->pt()<<"<<<eta:  "<<iGen->daughter(1)->daughter(1)->eta()<<"<<<phi:  "<<iGen->daughter(1)->daughter(1)->phi()<<"<<<mass:  "<<iGen->daughter(1)->daughter(1)->mass() << std::endl;
-  //
-  // std::cout << "  >>>>>> dR_A1_A2:  "<<dR_A1_A2<< std::endl;
-  // std::cout << "  >>>>>> dR_H_A1:  "<<dR_H_A1<< std::endl;
-  // std::cout << "  >>>>>> dR_H_A2:  "<<dR_H_A2<< std::endl;
-  // std::cout << "  >>>>>> dR_A1_Tau1:  "<<dR_A1_Tau1<< std::endl;
-  // std::cout << "  >>>>>> dR_A1_Tau2:  "<<dR_A1_Tau2<< std::endl;
-  // std::cout << "  >>>>>> dR_A2_Tau3:  "<<dR_A2_Tau3<< std::endl;
-  // std::cout << "  >>>>>> dR_A2_Tau4:  "<<dR_A2_Tau4<< std::endl;
-  // std::cout << "  >>>>>> dR_Tau1_Tau2:  "<<dR_Tau1_Tau2<< std::endl;
-  // std::cout << "  >>>>>> dR_Tau3_Tau4:  "<<dR_Tau3_Tau4<< std::endl;
+ if (isDebug){
+  std::cout << "  >>>>>> Higgs gen (35) <<<<<"<<"<<< status: "<<iGen->status()<<"<<<pt:  "<<iGen->pt()<<"<<<eta:  "<<iGen->eta()<<"<<<phi:  "<<iGen->phi()<<"<<<mass:  "<<iGen->mass() << std::endl;
+  std::cout << "  >>>>>> Higgs LorentzVector (35) <<<<<"<<"<<<mass:  "<<GenHiggs.M() << std::endl;
+  std::cout << "  >>>>>> A1 gen (25) <<<<<"<<"<<< status: "<<iGen->daughter(0)->status()<<"<<<pt:  "<<iGen->daughter(0)->pt()<<"<<<eta:  "<<iGen->daughter(0)->eta()<<"<<<phi:  "<<iGen->daughter(0)->phi()<<"<<<mass:  "<<iGen->daughter(0)->mass() << std::endl;
+  std::cout << "  >>>>>> A1 LorentzVector (25) <<<<<"<<"<<<mass:  "<< GenA1.M() << std::endl;
+  std::cout << "  >>>>>> A2 gen (25) <<<<<"<<"<<< status: "<<iGen->daughter(1)->status()<<"<<<pt:  "<<iGen->daughter(1)->pt()<<"<<<eta:  "<<iGen->daughter(1)->eta()<<"<<<phi:  "<<iGen->daughter(1)->phi()<<"<<<mass:  "<<iGen->daughter(1)->mass() << std::endl;
+  std::cout << "  >>>>>> A2 LorentzVector (25) <<<<<"<<"<<<mass:  "<< GenA2.M() << std::endl;
+  std::cout << "  >>>>>> Tau1 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(0)->daughter(0)->status()<<"<<<pt:  "<<iGen->daughter(0)->daughter(0)->pt()<<"<<<eta:  "<<iGen->daughter(0)->daughter(0)->eta()<<"<<<phi:  "<<iGen->daughter(0)->daughter(0)->phi()<<"<<<mass:  "<<iGen->daughter(0)->daughter(0)->mass() << std::endl;
+  std::cout << "  >>>>>> Tau2 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(0)->daughter(1)->status()<<"<<<pt:  "<<iGen->daughter(0)->daughter(1)->pt()<<"<<<eta:  "<<iGen->daughter(0)->daughter(1)->eta()<<"<<<phi:  "<<iGen->daughter(0)->daughter(1)->phi()<<"<<<mass:  "<<iGen->daughter(0)->daughter(1)->mass() << std::endl;
+  std::cout << "  >>>>>> Tau3 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(1)->daughter(0)->status()<<"<<<pt:  "<<iGen->daughter(1)->daughter(0)->pt()<<"<<<eta:  "<<iGen->daughter(1)->daughter(0)->eta()<<"<<<phi:  "<<iGen->daughter(1)->daughter(0)->phi()<<"<<<mass:  "<<iGen->daughter(1)->daughter(0)->mass() << std::endl;
+  std::cout << "  >>>>>> Tau4 gen (15) <<<<<"<<"<<< status: "<<iGen->daughter(1)->daughter(1)->status()<<"<<<pt:  "<<iGen->daughter(1)->daughter(1)->pt()<<"<<<eta:  "<<iGen->daughter(1)->daughter(1)->eta()<<"<<<phi:  "<<iGen->daughter(1)->daughter(1)->phi()<<"<<<mass:  "<<iGen->daughter(1)->daughter(1)->mass() << std::endl;
+  std::cout << "  >>>>>> dR_A1_A2:  "<<dR_A1_A2<< std::endl;
+  std::cout << "  >>>>>> dR_H_A1:  "<<dR_H_A1<< std::endl;
+  std::cout << "  >>>>>> dR_H_A2:  "<<dR_H_A2<< std::endl;
+  std::cout << "  >>>>>> dR_A1_Tau1:  "<<dR_A1_Tau1<< std::endl;
+  std::cout << "  >>>>>> dR_A1_Tau2:  "<<dR_A1_Tau2<< std::endl;
+  std::cout << "  >>>>>> dR_A2_Tau3:  "<<dR_A2_Tau3<< std::endl;
+  std::cout << "  >>>>>> dR_A2_Tau4:  "<<dR_A2_Tau4<< std::endl;
+  std::cout << "  >>>>>> dR_Tau1_Tau2:  "<<dR_Tau1_Tau2<< std::endl;
+  std::cout << "  >>>>>> dR_Tau3_Tau4:  "<<dR_Tau3_Tau4<< std::endl;
+}
 
   }
 ntotal_event++;
@@ -648,8 +650,8 @@ H_tau_att_Tau3_Tau4_dphi_deta->Fill(V_att_Tau3_Tau4_dphi,V_att_Tau3_Tau4_deta);
 
 fillTrigger( iEvent, iSetup );
 RHTree->Fill();
-
 }
+
 
 V_att_genHiggs_M_inv_.clear();
 V_att_genA1_M_inv_.clear();

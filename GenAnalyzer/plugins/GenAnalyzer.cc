@@ -163,11 +163,11 @@ vector<float> V_att_Tau3_Tau4_deta_;
 vector<float> V_att_Tau3_Tau4_dphi_;
 
 
-TLorentzVector SetTaus(Float_t tau_pt, Float_t tau_eta, Float_t tau_phi, Float_t tau_mass){
-  TLorentzVector Tau_Candidate;
-  Tau_Candidate.SetPtEtaPhiM(tau_pt, tau_eta, tau_phi, tau_mass);
-  return Tau_Candidate;
-}
+// TLorentzVector SetTaus(Float_t tau_pt, Float_t tau_eta, Float_t tau_phi, Float_t tau_mass){
+//   TLorentzVector Tau_Candidate;
+//   Tau_Candidate.SetPtEtaPhiM(tau_pt, tau_eta, tau_phi, tau_mass);
+//   return Tau_Candidate;
+// }
 
 //
 // static data member definitions
@@ -183,11 +183,11 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
 {
   isDebug  = iConfig.getParameter<bool>("isDebug");
   print_trigger  = iConfig.getParameter<bool>("print_trigger");
-  // selected_trgName  = iConfig.getParameter<std::string>("selected_trgName");
 
    //now do what ever initialization is needed
    RHTree = fs->make<TTree>("RHTree","Gen info Tree");
    branchesTrigger( RHTree, fs );
+   branchesReco( RHTree, fs );
    H_tau_att_genHiggs_M_inv     = fs->make<TH1D>("h_genHiggs_M_inv"   , "m^{gen_inv H};m^{gen_inv H};Events"                 ,  10,  120, 130);
    H_tau_att_genA1_M_inv     = fs->make<TH1D>("h_genA1_M_inv"   , "m^{gen_inv A1};m^{gen_inv A1};Events"                     ,  30,  3, 15);
    H_tau_att_genA2_M_inv     = fs->make<TH1D>("h_genA2_M_inv"   , "m^{gen_inv A2};m^{gen_inv A2};Events"                     ,  30,  3, 15);
@@ -283,7 +283,8 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
 
    genParticlesToken_   = consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genParticles"));
    triggerResultsToken_ = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("hltresults"));
-
+   jetCollectionT_      = consumes<reco::PFJetCollection>(iConfig.getParameter<edm::InputTag>("ak4PFJetCollection"));
+   tauCollectionT_      = consumes<reco::PFTauCollection>(iConfig.getParameter<edm::InputTag>("tauCollection"));
 
 }
 
@@ -358,6 +359,10 @@ GenAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    iEvent.getByToken(genParticlesToken_,   genParticles);
 
 
+   // std::cout << "   JET IN THIS EVENT  "<< jets->size()<< std::endl;
+   // std::cout << "   TAUS IN THIS EVENT  "<< taus->size()<< std::endl;
+
+
   // unsigned int NAs = 0;
   // unsigned int NTau_fromA = 0;
   // for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); iGen != genParticles->end(); ++iGen) {
@@ -414,7 +419,6 @@ float Tau1_Tau2_dphi = -1111.1111;
 float Tau3_Tau4_deta = -1111.1111;
 float Tau3_Tau4_dphi = -1111.1111;
 
-
 bool pass = false;
 
 for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); iGen != genParticles->end(); ++iGen) {
@@ -423,6 +427,7 @@ for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); i
   if ( abs(iGen->daughter(0)->daughter(0)->pdgId()) != 15 || abs(iGen->daughter(0)->daughter(1)->pdgId()) != 15 || abs(iGen->daughter(1)->daughter(0)->pdgId()) != 15 || abs(iGen->daughter(1)->daughter(1)->pdgId()) != 15 ) continue;
   if ( abs(iGen->daughter(0)->daughter(0)->status()) != 2 || abs(iGen->daughter(0)->daughter(1)->status()) != 2 || abs(iGen->daughter(1)->daughter(0)->status()) != 2 || abs(iGen->daughter(1)->daughter(1)->status()) != 2 ) continue;
   pass = true;
+
 
   TLorentzVector GenTau1  = SetTaus(iGen->daughter(0)->daughter(0)->pt(), iGen->daughter(0)->daughter(0)->eta(), iGen->daughter(0)->daughter(0)->phi(), iGen->daughter(0)->daughter(0)->mass());
   TLorentzVector GenTau2  = SetTaus(iGen->daughter(0)->daughter(1)->pt(), iGen->daughter(0)->daughter(1)->eta(), iGen->daughter(0)->daughter(1)->phi(), iGen->daughter(0)->daughter(1)->mass());
@@ -649,6 +654,7 @@ H_tau_att_Tau1_Tau2_dphi_deta->Fill(V_att_Tau1_Tau2_dphi,V_att_Tau1_Tau2_deta);
 H_tau_att_Tau3_Tau4_dphi_deta->Fill(V_att_Tau3_Tau4_dphi,V_att_Tau3_Tau4_deta);
 
 fillTrigger( iEvent, iSetup );
+fillReco( iEvent, iSetup );
 RHTree->Fill();
 }
 

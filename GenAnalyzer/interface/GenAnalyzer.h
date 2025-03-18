@@ -43,6 +43,14 @@
 
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "FWCore/Common/interface/TriggerNames.h"
+#include "FWCore/Utilities/interface/RegexMatch.h"
+
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "DataFormats/JetReco/interface/PFJet.h"
+#include "DataFormats/JetReco/interface/GenJetCollection.h"
+
+#include "DataFormats/TauReco/interface/PFTau.h"
+#include "DataFormats/TauReco/interface/PFTauFwd.h"
 
 #include "TLorentzVector.h"
 #include "TH2D.h"
@@ -61,7 +69,10 @@
 #include "TLorentzVector.h"
 #include <string>
 #include <cstring>
+#include <set>
 using std::vector;
+
+
 
 // class declaration
 
@@ -89,6 +100,8 @@ class GenAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<std::vector<reco::GenParticle> > genParticlesToken_;
       edm::InputTag genParticles_;
       edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_ ;
+      edm::EDGetTokenT<reco::PFJetCollection> jetCollectionT_;
+      edm::EDGetTokenT<reco::PFTauCollection> tauCollectionT_;
 
        // Main TTree
       TTree *RHTree;
@@ -97,6 +110,17 @@ class GenAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       // Selection and filling functions
       void branchesTrigger         ( TTree*, edm::Service<TFileService>& );
       void fillTrigger             ( const edm::Event&, const edm::EventSetup& );
+      void branchesReco         ( TTree*, edm::Service<TFileService>& );
+      void fillReco            ( const edm::Event&, const edm::EventSetup& );
+      std::vector<int> vJetIdxs;
+      std::vector<int> vTauIdxs;
+      // function used in plugins
+      TLorentzVector SetTaus(Float_t tau_pt, Float_t tau_eta, Float_t tau_phi, Float_t tau_mass){
+        TLorentzVector Tau_Candidate;
+        Tau_Candidate.SetPtEtaPhiM(tau_pt, tau_eta, tau_phi, tau_mass);
+        return Tau_Candidate;
+      }
+
 
 };
 #endif

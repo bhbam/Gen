@@ -142,7 +142,7 @@ void GenAnalyzer::fillTrigger(const edm::Event& iEvent, const edm::EventSetup& i
     }
 
   // OR combination of all triggers
-  if ((hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_5 > 0))
+  if ((hltAccept_1 > 0) || (hltAccept_2 > 0) || (hltAccept_3 > 0) || (hltAccept_4 > 0) || (hltAccept_5 > 0))
   {
     H_accept_trigger->Fill(1);
     V_pass_trigger=1;

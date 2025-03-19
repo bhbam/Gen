@@ -1,30 +1,36 @@
 #include "Gen/GenAnalyzer/interface/GenAnalyzer.h"
 
 TH1D *H_accept_trigger;
+float V_pass_trigger;
 float V_accept_trigger_1;
 float V_accept_trigger_2;
 float V_accept_trigger_3;
 float V_accept_trigger_4;
+float V_accept_trigger_5;
 
 //-----------------------now do what ever initialization is needed
 
 void GenAnalyzer::branchesTrigger(TTree* tree, edm::Service<TFileService> &fs)
 {
   H_accept_trigger     = fs->make<TH1D>("h_accept_trigger"   , "accept_trigger;accept_trigger;Events"                 ,  0,  2, 1);
+  tree->Branch("pass_trigger",  &V_pass_trigger);
   tree->Branch("eta2p1_v4",  &V_accept_trigger_1);
   tree->Branch("eta2p1_PFJet60_v4",  &V_accept_trigger_2);
   tree->Branch("eta2p1_PFJet75_v4",  &V_accept_trigger_3);
   tree->Branch("eta2p1_OneProng_M5to80_v2",  &V_accept_trigger_4);
+  tree->Branch("HLT_PFMET",  &V_accept_trigger_5);
 }
 
 // ---------------------- Fill tree with trigger info  ------------
 void GenAnalyzer::fillTrigger(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
+  V_pass_trigger     = -1111.1111;
   V_accept_trigger_1 = -1111.1111;
   V_accept_trigger_2 = -1111.1111;
   V_accept_trigger_3 = -1111.1111;
   V_accept_trigger_4 = -1111.1111;
+  V_accept_trigger_5 = -1111.1111;
   if (isDebug) {std::cout << " >>>>>> Checking TriggerResults" << std::endl;}
   // Study of trigger bit
   edm::Handle<edm::TriggerResults> hltresults;
@@ -37,18 +43,16 @@ void GenAnalyzer::fillTrigger(const edm::Event& iEvent, const edm::EventSetup& i
   int hltAccept_2 = 0;
   int hltAccept_3 = 0;
   int hltAccept_4 = 0;
+  int hltAccept_5 = 0;
   edm::TriggerNames const& triggerNames = iEvent.triggerNames(*hltresults);
   std::string used_trgName_1 = "HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1_v4";
   std::string used_trgName_2 = "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet60_v4";
   std::string used_trgName_3 = "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_PFJet75_v4";
   std::string used_trgName_4 = "HLT_DoubleMediumDeepTauPFTauHPS30_L2NN_eta2p1_OneProng_M5to80_v2";
-  // std::string used_trgName = "HLT_*";
+  std::string used_trgName_5 = "HLT_PFMET*";
 
+  // ----------First trigger----------
   std::vector< std::vector<std::string>::const_iterator > trgMatches_1 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_1 );
-  std::vector< std::vector<std::string>::const_iterator > trgMatches_2 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_2 );
-  std::vector< std::vector<std::string>::const_iterator > trgMatches_3 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_3 );
-  std::vector< std::vector<std::string>::const_iterator > trgMatches_4 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_4 );
-
   if ( !trgMatches_1.empty() ) {
     if (isDebug){std::cout << " Number of matches trugger with string : "<< used_trgName_1 <<"---" << trgMatches_1.size() << std::endl;}
   for ( auto const& iT_1 : trgMatches_1 ) {
@@ -65,7 +69,8 @@ void GenAnalyzer::fillTrigger(const edm::Event& iEvent, const edm::EventSetup& i
     V_accept_trigger_1 = hltAccept_1;
   }
 
-
+    // ----------Second trigger----------
+    std::vector< std::vector<std::string>::const_iterator > trgMatches_2 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_2 );
     if ( !trgMatches_2.empty() ) {
       if (isDebug){std::cout << " Number of matches trugger with string : "<< used_trgName_2 <<"---" << trgMatches_2.size() << std::endl;}
     for ( auto const& iT_2 : trgMatches_2 ) {
@@ -82,7 +87,8 @@ void GenAnalyzer::fillTrigger(const edm::Event& iEvent, const edm::EventSetup& i
       V_accept_trigger_2 = hltAccept_2;
     }
 
-
+    // ----------Third trigger----------
+    std::vector< std::vector<std::string>::const_iterator > trgMatches_3 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_3 );
     if ( !trgMatches_3.empty() ) {
       if (isDebug){std::cout << " Number of matches trugger with string : "<< used_trgName_3 <<"---" << trgMatches_3.size() << std::endl;}
     for ( auto const& iT_3 : trgMatches_3 ) {
@@ -99,7 +105,8 @@ void GenAnalyzer::fillTrigger(const edm::Event& iEvent, const edm::EventSetup& i
       V_accept_trigger_3 = hltAccept_3;
     }
 
-
+    // ----------Forth trigger----------
+    std::vector< std::vector<std::string>::const_iterator > trgMatches_4 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_4 );
     if ( !trgMatches_4.empty() ) {
       if (isDebug){std::cout << " Number of matches trugger with string : "<< used_trgName_4 <<"---" << trgMatches_4.size() << std::endl;}
     for ( auto const& iT_4 : trgMatches_4 ) {
@@ -116,9 +123,28 @@ void GenAnalyzer::fillTrigger(const edm::Event& iEvent, const edm::EventSetup& i
       V_accept_trigger_4 = hltAccept_4;
     }
 
+    // ----------Fifth trigger----------
+    std::vector< std::vector<std::string>::const_iterator > trgMatches_5 = edm::regexMatch( triggerNames.triggerNames(), used_trgName_5 );
+    if ( !trgMatches_5.empty() ) {
+      if (isDebug){std::cout << " Number of matches trugger with string : "<< used_trgName_5 <<"---" << trgMatches_5.size() << std::endl;}
+    for ( auto const& iT_5 : trgMatches_5 ) {
+        if (print_trigger){std::cout << "["<<triggerNames.triggerIndex(*iT_5)<<"]:"<< *iT_5 << std::endl;}
+        if ( hltresults->accept(triggerNames.triggerIndex(*iT_5)) ){
+          hltAccept_5 = hltAccept_5+1;
+          if (isDebug) std::cout << " name["<<triggerNames.triggerIndex(*iT_5)<<"]:"<< *iT_5 << " -> " << hltresults->accept(triggerNames.triggerIndex(*iT_5)) << std::endl;
+          }
+        }
+      }
+    if (hltAccept_5 > 0)
+    {
+      if (isDebug) std::cout << "*************** HLT_PFMET*:" << hltAccept_5 << std::endl;
+      V_accept_trigger_5 = hltAccept_5;
+    }
 
-  if ((hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_4 > 0))
+  // OR combination of all triggers
+  if ((hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_4 > 0) || (hltAccept_5 > 0))
   {
     H_accept_trigger->Fill(1);
+    V_pass_trigger=1;
   }
 }

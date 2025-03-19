@@ -8,6 +8,10 @@ float V_H_mass_jet_reco;
 float V_A1_mass_tau_reco;
 float V_A2_mass_tau_reco;
 float V_H_mass_tau_reco;
+float V_dR_jets_reco;
+float V_dR_taus_reco;
+float V_N_matched_jets_reco;
+float V_N_matched_taus_reco;
 // TH1D *H_reco_mass;
 //-----------------------now do what ever initialization is needed
 
@@ -20,6 +24,10 @@ void GenAnalyzer::branchesReco(TTree* tree, edm::Service<TFileService> &fs)
   tree->Branch("A1_mass_tau_reco",  &V_A1_mass_tau_reco);
   tree->Branch("A2_mass_tau_reco",  &V_A2_mass_tau_reco);
   tree->Branch("H_mass_tau_reco",   &V_H_mass_tau_reco);
+  tree->Branch("dR_jets_reco",      &V_dR_jets_reco);
+  tree->Branch("dR_taus_reco",      &V_dR_taus_reco);
+  tree->Branch("N_matched_jets_reco",      &V_N_matched_jets_reco);
+  tree->Branch("N_matched_taus_reco",      &V_N_matched_taus_reco);
 
 
 
@@ -35,6 +43,11 @@ void GenAnalyzer::fillReco(const edm::Event& iEvent, const edm::EventSetup& iSet
   V_A1_mass_tau_reco = -1111.1111;
   V_A2_mass_tau_reco = -1111.1111;
   V_H_mass_tau_reco  = -1111.1111;
+  V_dR_jets_reco  = -1111.1111;
+  V_dR_taus_reco  = -1111.1111;
+  V_N_matched_jets_reco  = -1111.1111;
+  V_N_matched_taus_reco  = -1111.1111;
+
   vJetIdxs.clear();
   vTauIdxs.clear();
   uniqueJetIdxs.clear();
@@ -90,28 +103,35 @@ void GenAnalyzer::fillReco(const edm::Event& iEvent, const edm::EventSetup& iSet
         }
 
   }
-
-  if (pass_reco)
+  // Taking first two Jets and Tau
+  reco::PFJetRef iJet_0( jets, vJetIdxs[0] );
+  reco::PFJetRef iJet_1( jets, vJetIdxs[1] );
+  reco::PFTauRef iTau_0( taus, vTauIdxs[0] );
+  reco::PFTauRef iTau_1( taus, vTauIdxs[1] );
+  float dR_reco_jets = reco::deltaR( iJet_0->eta(),iJet_0->phi(), iJet_1->eta(),iJet_1->phi() );
+  float dR_reco_taus = reco::deltaR( iTau_0->eta(),iTau_0->phi(), iTau_1->eta(),iTau_1->phi() );
+  TLorentzVector A1_jet_inv  = SetTaus(iJet_0->pt(), iJet_0->eta(), iJet_0->phi(), iJet_0->mass());
+  TLorentzVector A2_jet_inv  = SetTaus(iJet_1->pt(), iJet_1->eta(), iJet_1->phi(), iJet_1->mass());
+  TLorentzVector H_jet_inv = A1_jet_inv + A2_jet_inv;
+  TLorentzVector A1_tau_inv  = SetTaus(iTau_0->pt(), iTau_0->eta(), iTau_0->phi(), iTau_0->mass());
+  TLorentzVector A2_tau_inv  = SetTaus(iTau_1->pt(), iTau_1->eta(), iTau_1->phi(), iTau_1->mass());
+  TLorentzVector H_tau_inv = A1_tau_inv + A2_tau_inv;
+  if (pass_reco && (dR_reco_jets > 0.5) && (dR_reco_taus >0.5) )
   {
-    reco::PFJetRef iJet_0( jets, vJetIdxs[0] );
-    reco::PFJetRef iJet_1( jets, vJetIdxs[1] );
-    reco::PFTauRef iTau_0( taus, vTauIdxs[0] );
-    reco::PFTauRef iTau_1( taus, vTauIdxs[1] );
-    TLorentzVector A1_jet_inv  = SetTaus(iJet_0->pt(), iJet_0->eta(), iJet_0->phi(), iJet_0->mass());
-    TLorentzVector A2_jet_inv  = SetTaus(iJet_1->pt(), iJet_1->eta(), iJet_1->phi(), iJet_1->mass());
-    TLorentzVector H_jet_inv = A1_jet_inv + A2_jet_inv;
-    TLorentzVector A1_tau_inv  = SetTaus(iTau_0->pt(), iTau_0->eta(), iTau_0->phi(), iTau_0->mass());
-    TLorentzVector A2_tau_inv  = SetTaus(iTau_1->pt(), iTau_1->eta(), iTau_1->phi(), iTau_1->mass());
-    TLorentzVector H_tau_inv = A1_tau_inv + A2_tau_inv;
+
     V_A1_mass_jet_reco = A1_jet_inv.M();
     V_A2_mass_jet_reco = A2_jet_inv.M();
     V_H_mass_jet_reco  = H_jet_inv.M();
     V_A1_mass_tau_reco = A1_tau_inv.M();
     V_A2_mass_tau_reco = A2_tau_inv.M();
     V_H_mass_tau_reco  = H_tau_inv.M();
+    V_dR_jets_reco     = dR_reco_jets;
+    V_dR_taus_reco     = dR_reco_taus;
+    V_N_matched_jets_reco     = vJetIdxs.size();
+    V_N_matched_taus_reco     = vTauIdxs.size();
+
     if (isDebug) std::cout << "A1_jet_inv: " << V_A1_mass_jet_reco << "  , A2_jet_inv: " << V_A2_mass_jet_reco<< " ,  H_jet_inv: "  << V_H_mass_jet_reco << std::endl;
     if (isDebug) std::cout << "A1_tau_inv: " << V_A1_mass_tau_reco << "  , A2_tau_inv: " << V_A2_mass_tau_reco<< " ,  H_tau_inv: "  << V_H_mass_tau_reco << std::endl;
-    // H_reco_mass->Fill(V_H_mass_jet_reco);
 
   }
 

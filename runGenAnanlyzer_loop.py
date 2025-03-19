@@ -13,12 +13,12 @@ for i in range(1,101):
 
     # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M3p7_Run3_2023/3p7_AODSIM_newBigProd/250113_144409/0000/step3_AODSIM_{i}.root"
     # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M4_Run3_2023/4_AODSIM_newBigProd/250113_145716/0000/step3_AODSIM_{i}.root"
-    file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M5_Run3_2023/5_AODSIM_newBigProd/250113_145836/0000/step3_AODSIM_{i}.root"
+    # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M5_Run3_2023/5_AODSIM_newBigProd/250113_145836/0000/step3_AODSIM_{i}.root"
     # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M6_Run3_2023/6_AODSIM_newBigProd/250113_150335/0000/step3_AODSIM_{i}.root"
     # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M8_Run3_2023/signal_Mass_8_AODSIM_multiThreads/250111_024345/0000/step3_AODSIM_M14_{i}.root"
     # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M10_Run3_2023/signal_Mass_10_AODSIM_multiThreads/250111_024902/0000/step3_AODSIM_M14_{i}.root"
     # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M12_Run3_2023/signal_Mass_12_AODSIM_multiThreads/250111_025148/0000/step3_AODSIM_M14_{i}.root"
-    # file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M14_Run3_2023/signal_Mass_14_AODSIM_multiThreads/250111_025512/0000/step3_AODSIM_M14_{i}.root"
+    file = f"root://xrootd.unl.edu//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M14_Run3_2023/signal_Mass_14_AODSIM_multiThreads/250111_025512/0000/step3_AODSIM_M14_{i}.root"
     inputFiles.append(file)
 # print(inputFiles)
 
@@ -28,7 +28,7 @@ def run_cmsRun(input_root):
     tag = (input_root.split("_")[-1]).split(".")[0]
     maxEvents_ = -1
     skipEvents_ = 0
-    outputFile_ = f"Gen_reco_Info_with_multi_trigger_H_A_4Tau_M5_{tag}.root"
+    outputFile_ = f"Gen_reco_Info_with_multi_trigger_H_A_4Tau_M14_{tag}.root"
     cmd = f"cmsRun {cfg} inputFiles={inputFiles_} maxEvents={maxEvents_} skipEvents={skipEvents_} outputFile={outputFile_}"
     print(cmd)
     os.system(cmd)

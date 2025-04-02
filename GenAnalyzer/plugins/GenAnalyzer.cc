@@ -183,7 +183,8 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
 {
   isDebug  = iConfig.getParameter<bool>("isDebug");
   print_trigger  = iConfig.getParameter<bool>("print_trigger");
-
+  minJetPt_  = iConfig.getParameter<double>("minJetPt");
+  maxJetEta_ = iConfig.getParameter<double>("maxJetEta");
    //now do what ever initialization is needed
    RHTree = fs->make<TTree>("RHTree","Gen info Tree");
    branchesTrigger( RHTree, fs );
@@ -285,6 +286,7 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
    triggerResultsToken_ = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("hltresults"));
    jetCollectionT_      = consumes<reco::PFJetCollection>(iConfig.getParameter<edm::InputTag>("ak4PFJetCollection"));
    tauCollectionT_      = consumes<reco::PFTauCollection>(iConfig.getParameter<edm::InputTag>("tauCollection"));
+   metToken_ = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metCollection"));
 
 }
 
@@ -419,14 +421,14 @@ float Tau1_Tau2_dphi = -1111.1111;
 float Tau3_Tau4_deta = -1111.1111;
 float Tau3_Tau4_dphi = -1111.1111;
 
-bool pass = false;
+bool gen_pass = false;
 
 for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); iGen != genParticles->end(); ++iGen) {
 
   if ( abs(iGen->pdgId()) != 35 || iGen->numberOfDaughters() != 2 || iGen->daughter(0)->pdgId() != 25 || iGen->daughter(1)->pdgId() != 25 ) continue;
   if ( abs(iGen->daughter(0)->daughter(0)->pdgId()) != 15 || abs(iGen->daughter(0)->daughter(1)->pdgId()) != 15 || abs(iGen->daughter(1)->daughter(0)->pdgId()) != 15 || abs(iGen->daughter(1)->daughter(1)->pdgId()) != 15 ) continue;
   if ( abs(iGen->daughter(0)->daughter(0)->status()) != 2 || abs(iGen->daughter(0)->daughter(1)->status()) != 2 || abs(iGen->daughter(1)->daughter(0)->status()) != 2 || abs(iGen->daughter(1)->daughter(1)->status()) != 2 ) continue;
-  pass = true;
+  gen_pass = true;
 
 
   TLorentzVector GenTau1  = SetTaus(iGen->daughter(0)->daughter(0)->pt(), iGen->daughter(0)->daughter(0)->eta(), iGen->daughter(0)->daughter(0)->phi(), iGen->daughter(0)->daughter(0)->mass());
@@ -517,7 +519,7 @@ for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); i
 
   }
 ntotal_event++;
-if (pass) {
+if (gen_pass) {
 npassed_event++;
 
 V_att_genHiggs_M_inv    = genHiggs_mass_inv;

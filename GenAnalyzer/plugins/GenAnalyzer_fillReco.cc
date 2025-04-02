@@ -12,7 +12,12 @@ float V_dR_jets_reco;
 float V_dR_taus_reco;
 float V_N_matched_jets_reco;
 float V_N_matched_taus_reco;
-// TH1D *H_reco_mass;
+float V_met_e_reco;
+float V_met_pt_reco;
+float V_met_px_reco;
+float V_met_py_reco;
+float V_met_phi_reco;
+float V_met_significance_reco;
 //-----------------------now do what ever initialization is needed
 
 void GenAnalyzer::branchesReco(TTree* tree, edm::Service<TFileService> &fs)
@@ -28,6 +33,12 @@ void GenAnalyzer::branchesReco(TTree* tree, edm::Service<TFileService> &fs)
   tree->Branch("dR_taus_reco",      &V_dR_taus_reco);
   tree->Branch("N_matched_jets_reco",      &V_N_matched_jets_reco);
   tree->Branch("N_matched_taus_reco",      &V_N_matched_taus_reco);
+  tree->Branch("met_e_reco",      &V_met_e_reco);
+  tree->Branch("met_pt_reco",      &V_met_pt_reco);
+  tree->Branch("met_px_reco",      &V_met_px_reco);
+  tree->Branch("met_py_reco",      &V_met_py_reco);
+  tree->Branch("met_phi_reco",      &V_met_phi_reco);
+  tree->Branch("met_significance_reco",      &V_met_significance_reco);
 
 
 
@@ -47,16 +58,51 @@ void GenAnalyzer::fillReco(const edm::Event& iEvent, const edm::EventSetup& iSet
   V_dR_taus_reco  = -1111.1111;
   V_N_matched_jets_reco  = -1111.1111;
   V_N_matched_taus_reco  = -1111.1111;
+  V_met_e_reco  = -1111.1111;
+  V_met_pt_reco  = -1111.1111;
+  V_met_px_reco  = -1111.1111;
+  V_met_py_reco  = -1111.1111;
+  V_met_phi_reco  = -1111.1111;
+  V_met_significance_reco  = -1111.1111;
 
   vJetIdxs.clear();
   vTauIdxs.clear();
   uniqueJetIdxs.clear();
+
   edm::Handle<std::vector<reco::GenParticle> > genParticles;
   iEvent.getByToken(genParticlesToken_,   genParticles);
   edm::Handle<reco::PFJetCollection> jets;
   iEvent.getByToken(jetCollectionT_, jets);
   edm::Handle<reco::PFTauCollection> taus;
   iEvent.getByToken(tauCollectionT_, taus);
+  edm::Handle<reco::PFMETCollection> metHandle;
+  iEvent.getByToken(metToken_, metHandle);
+
+  if (metHandle.isValid() && !metHandle->empty())
+    {
+
+      float met_e = metHandle->begin()->sumEt();
+      float met_pt = metHandle->begin()->pt();
+      float met_px = metHandle->begin()->px();
+      float met_py = metHandle->begin()->py();
+      float met_phi = metHandle->begin()->phi();
+      float met_significance = metHandle->begin()->significance();
+      V_met_e_reco  = met_e;
+      V_met_pt_reco  = met_pt;
+      V_met_px_reco  = met_px;
+      V_met_py_reco  = met_py;
+      V_met_phi_reco  = met_phi;
+      V_met_significance_reco  = met_significance;
+      if (isDebug) std::cout<< "MET: pt = " << met_pt<< " , phi = " << met_phi<< ", E = " << met_e<< ", px  "<< met_px<<std::endl;
+    }
+
+  else
+    {
+      if (isDebug) std::cout<<"LogWarning(METAnalyzer)" << "MET collection not found!"<<std::endl;
+    }
+
+
+
   bool pass_reco= false;
   for (reco::GenParticleCollection::const_iterator iGen = genParticles->begin(); iGen != genParticles->end(); ++iGen)
   {
@@ -68,6 +114,8 @@ void GenAnalyzer::fillReco(const edm::Event& iEvent, const edm::EventSetup& iSet
       for ( unsigned iJ(0); iJ != jets->size(); ++iJ )
       {
         reco::PFJetRef iJet( jets, iJ );
+        if ( std::abs(iJet->pt())  < minJetPt_ ) continue;
+        if ( std::abs(iJet->eta()) > maxJetEta_ ) continue;
         float dR_jet_A1 = reco::deltaR( iJet->eta(),iJet->phi(), iGen->daughter(0)->eta(),iGen->daughter(0)->phi() );
         float dR_jet_A2 = reco::deltaR( iJet->eta(),iJet->phi(), iGen->daughter(1)->eta(),iGen->daughter(1)->phi() );
 

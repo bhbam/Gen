@@ -52,6 +52,10 @@
 #include "DataFormats/TauReco/interface/PFTau.h"
 #include "DataFormats/TauReco/interface/PFTauFwd.h"
 
+#include "DataFormats/METReco/interface/MET.h"
+#include "DataFormats/METReco/interface/PFMET.h"
+#include "DataFormats/METReco/interface/PFMETCollection.h"
+
 #include "TLorentzVector.h"
 #include "TH2D.h"
 #include "TTree.h"
@@ -93,6 +97,8 @@ class GenAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       //  flags
       bool isDebug;
       bool print_trigger;
+      double minJetPt_;
+      double maxJetEta_;
       // ----------member data ---------------------------
 
       //Tokens
@@ -102,6 +108,7 @@ class GenAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_ ;
       edm::EDGetTokenT<reco::PFJetCollection> jetCollectionT_;
       edm::EDGetTokenT<reco::PFTauCollection> tauCollectionT_;
+      edm::EDGetTokenT<reco::PFMETCollection> metToken_;
 
        // Main TTree
       TTree *RHTree;

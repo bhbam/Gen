@@ -7,7 +7,7 @@ cfg='GenAnalyzer/python/conFig_cfg.py'
 # inputFiles_='file:/uscms/home/bbbam/nobackup/analysis/MCGeneration/CMSSW_10_6_20/src/MCProduction_with_trigger/GEN_SIM_DIGI_HToAATo4Tau_M5.root'
 inputFiles_='file:root://cmsxrootd.fnal.gov//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M3p7_Run3_2023/3p7_AODSIM_newBigProd/250113_144409/0000/step3_AODSIM_97.root'
 # inputFiles_ = 'file:root://cmsxrootd.fnal.gov//store/group/lpcml/rchudasa/MCGenerationRun3/HToAATo4Tau_hadronic_tauDecay_M10_Run3_2023/signal_Mass_10_AODSIM_multiThreads/250111_024902/0000/step3_AODSIM_M14_97.root'
-maxEvents_=100
+maxEvents_=10
 skipEvents_=0#
 outputFile_='GenInfo_only_H_AA_4Tau_M3p7.root'
 cmd="cmsRun %s inputFiles=%s maxEvents=%d skipEvents=%d outputFile=%s"%(cfg,inputFiles_,maxEvents_,skipEvents_,outputFile_)

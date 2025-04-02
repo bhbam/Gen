@@ -41,12 +41,5 @@ process.TFileService = cms.Service("TFileService",
     )
 
 process.load("Gen.GenAnalyzer.GenAnalyzer_cfi")
-# process.fevt = cms.EDAnalyzer('TriggerAnalyzer',
-# # process.fevt = cms.EDAnalyzer('GenAnalyzer',
-#    genParticles    = cms.InputTag('genParticles',"",""),
-#    ak8GenJets    = cms.InputTag('ak8GenJets',"",""),
-#    genMetTrue    = cms.InputTag('genMetTrue',"",""),
-#    hltresults = cms.InputTag('TriggerResults', "", "HLT"),
-#                               )
 
 process.p = cms.Path(process.fevt)

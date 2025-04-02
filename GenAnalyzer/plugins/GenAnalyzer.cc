@@ -182,11 +182,10 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
 
 {
   isDebug  = iConfig.getParameter<bool>("isDebug");
-  print_trigger  = iConfig.getParameter<bool>("print_trigger");
+
 
    //now do what ever initialization is needed
    RHTree = fs->make<TTree>("RHTree","Gen info Tree");
-   branchesTrigger( RHTree, fs );
    H_tau_att_genHiggs_M_inv     = fs->make<TH1D>("h_genHiggs_M_inv"   , "m^{gen_inv H};m^{gen_inv H};Events"                 ,  10,  120, 130);
    H_tau_att_genA1_M_inv     = fs->make<TH1D>("h_genA1_M_inv"   , "m^{gen_inv A1};m^{gen_inv A1};Events"                     ,  30,  3, 15);
    H_tau_att_genA2_M_inv     = fs->make<TH1D>("h_genA2_M_inv"   , "m^{gen_inv A2};m^{gen_inv A2};Events"                     ,  30,  3, 15);
@@ -281,8 +280,6 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
    RHTree->Branch("Tau3_Tau4_dphi",  &V_att_Tau3_Tau4_dphi_);
 
    genParticlesToken_   = consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("genParticles"));
-   triggerResultsToken_ = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("hltresults"));
-
 
 }
 
@@ -646,7 +643,6 @@ H_tau_att_Tau3_Tau4_dphi->Fill( V_att_Tau3_Tau4_dphi );
 H_tau_att_Tau1_Tau2_dphi_deta->Fill(V_att_Tau1_Tau2_dphi,V_att_Tau1_Tau2_deta);
 H_tau_att_Tau3_Tau4_dphi_deta->Fill(V_att_Tau3_Tau4_dphi,V_att_Tau3_Tau4_deta);
 
-fillTrigger( iEvent, iSetup );
 RHTree->Fill();
 
 }

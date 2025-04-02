@@ -81,22 +81,20 @@ class GenAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
 
       //  flags
       bool isDebug;
-      bool print_trigger;
+      
       // ----------member data ---------------------------
 
       //Tokens
       edm::Service<TFileService> fs;
       edm::EDGetTokenT<std::vector<reco::GenParticle> > genParticlesToken_;
       edm::InputTag genParticles_;
-      edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_ ;
+
 
        // Main TTree
       TTree *RHTree;
 
 
-      // Selection and filling functions
-      void branchesTrigger         ( TTree*, edm::Service<TFileService>& );
-      void fillTrigger             ( const edm::Event&, const edm::EventSetup& );
+
 
 };
 #endif

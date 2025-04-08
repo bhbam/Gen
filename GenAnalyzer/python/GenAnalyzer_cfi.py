@@ -16,5 +16,7 @@ fevt = cms.EDAnalyzer('GenAnalyzer'
 # ,ak4PFJetCollection  = cms.InputTag('ak8PFJetsPuppi')
 ,tauCollection       = cms.InputTag("hpsPFTauProducer")
 ,metCollection       = cms.InputTag("pfMet")
+,pupimetCollection       = cms.InputTag("pfMetPuppi")
+,genmetCollection       = cms.InputTag("genMetTrue", "", "HLT")
 
 )

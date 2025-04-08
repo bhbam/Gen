@@ -56,6 +56,9 @@
 #include "DataFormats/METReco/interface/PFMET.h"
 #include "DataFormats/METReco/interface/PFMETCollection.h"
 
+#include "DataFormats/METReco/interface/GenMET.h"
+
+
 #include "TLorentzVector.h"
 #include "TH2D.h"
 #include "TTree.h"
@@ -109,6 +112,8 @@ class GenAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>
       edm::EDGetTokenT<reco::PFJetCollection> jetCollectionT_;
       edm::EDGetTokenT<reco::PFTauCollection> tauCollectionT_;
       edm::EDGetTokenT<reco::PFMETCollection> metToken_;
+      edm::EDGetTokenT<reco::PFMETCollection> pupimetToken_;
+      edm::EDGetTokenT<std::vector<reco::GenMET>> genmetToken_;
 
        // Main TTree
       TTree *RHTree;

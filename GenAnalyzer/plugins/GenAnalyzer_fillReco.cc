@@ -12,12 +12,27 @@ float V_dR_jets_reco;
 float V_dR_taus_reco;
 float V_N_matched_jets_reco;
 float V_N_matched_taus_reco;
+
 float V_met_e_reco;
 float V_met_pt_reco;
 float V_met_px_reco;
 float V_met_py_reco;
 float V_met_phi_reco;
 float V_met_significance_reco;
+
+float V_pupimet_e_reco;
+float V_pupimet_pt_reco;
+float V_pupimet_px_reco;
+float V_pupimet_py_reco;
+float V_pupimet_phi_reco;
+float V_pupimet_significance_reco;
+
+float V_genmet_e_reco;
+float V_genmet_pt_reco;
+float V_genmet_px_reco;
+float V_genmet_py_reco;
+float V_genmet_phi_reco;
+float V_genmet_significance_reco;
 //-----------------------now do what ever initialization is needed
 
 void GenAnalyzer::branchesReco(TTree* tree, edm::Service<TFileService> &fs)
@@ -33,12 +48,27 @@ void GenAnalyzer::branchesReco(TTree* tree, edm::Service<TFileService> &fs)
   tree->Branch("dR_taus_reco",      &V_dR_taus_reco);
   tree->Branch("N_matched_jets_reco",      &V_N_matched_jets_reco);
   tree->Branch("N_matched_taus_reco",      &V_N_matched_taus_reco);
+
   tree->Branch("met_e_reco",      &V_met_e_reco);
   tree->Branch("met_pt_reco",      &V_met_pt_reco);
   tree->Branch("met_px_reco",      &V_met_px_reco);
   tree->Branch("met_py_reco",      &V_met_py_reco);
   tree->Branch("met_phi_reco",      &V_met_phi_reco);
   tree->Branch("met_significance_reco",      &V_met_significance_reco);
+
+  tree->Branch("pupimet_e_reco",      &V_pupimet_e_reco);
+  tree->Branch("pupimet_pt_reco",      &V_pupimet_pt_reco);
+  tree->Branch("pupimet_px_reco",      &V_pupimet_px_reco);
+  tree->Branch("pupimet_py_reco",      &V_pupimet_py_reco);
+  tree->Branch("pupimet_phi_reco",      &V_pupimet_phi_reco);
+  tree->Branch("pupimet_significance_reco",      &V_pupimet_significance_reco);
+
+  tree->Branch("genmet_e_reco",      &V_genmet_e_reco);
+  tree->Branch("genmet_pt_reco",      &V_genmet_pt_reco);
+  tree->Branch("genmet_px_reco",      &V_genmet_px_reco);
+  tree->Branch("genmet_py_reco",      &V_genmet_py_reco);
+  tree->Branch("genmet_phi_reco",      &V_genmet_phi_reco);
+  tree->Branch("genmet_significance_reco",      &V_genmet_significance_reco);
 
 
 
@@ -58,6 +88,7 @@ void GenAnalyzer::fillReco(const edm::Event& iEvent, const edm::EventSetup& iSet
   V_dR_taus_reco  = -1111.1111;
   V_N_matched_jets_reco  = -1111.1111;
   V_N_matched_taus_reco  = -1111.1111;
+
   V_met_e_reco  = -1111.1111;
   V_met_pt_reco  = -1111.1111;
   V_met_px_reco  = -1111.1111;
@@ -65,18 +96,41 @@ void GenAnalyzer::fillReco(const edm::Event& iEvent, const edm::EventSetup& iSet
   V_met_phi_reco  = -1111.1111;
   V_met_significance_reco  = -1111.1111;
 
+  V_pupimet_e_reco  = -1111.1111;
+  V_pupimet_pt_reco  = -1111.1111;
+  V_pupimet_px_reco  = -1111.1111;
+  V_pupimet_py_reco  = -1111.1111;
+  V_pupimet_phi_reco  = -1111.1111;
+  V_pupimet_significance_reco  = -1111.1111;
+
+  V_genmet_e_reco  = -1111.1111;
+  V_genmet_pt_reco  = -1111.1111;
+  V_genmet_px_reco  = -1111.1111;
+  V_genmet_py_reco  = -1111.1111;
+  V_genmet_phi_reco  = -1111.1111;
+  V_genmet_significance_reco  = -1111.1111;
+
   vJetIdxs.clear();
   vTauIdxs.clear();
   uniqueJetIdxs.clear();
 
   edm::Handle<std::vector<reco::GenParticle> > genParticles;
   iEvent.getByToken(genParticlesToken_,   genParticles);
+
   edm::Handle<reco::PFJetCollection> jets;
   iEvent.getByToken(jetCollectionT_, jets);
+
   edm::Handle<reco::PFTauCollection> taus;
   iEvent.getByToken(tauCollectionT_, taus);
+
   edm::Handle<reco::PFMETCollection> metHandle;
   iEvent.getByToken(metToken_, metHandle);
+
+  edm::Handle<reco::PFMETCollection> pupimetHandle;
+  iEvent.getByToken(pupimetToken_, pupimetHandle);
+
+  edm::Handle<std::vector<reco::GenMET>> genmetHandle;
+  iEvent.getByToken(genmetToken_, genmetHandle);
 
   if (metHandle.isValid() && !metHandle->empty())
     {
@@ -98,9 +152,47 @@ void GenAnalyzer::fillReco(const edm::Event& iEvent, const edm::EventSetup& iSet
 
   else
     {
-      if (isDebug) std::cout<<"LogWarning(METAnalyzer)" << "MET collection not found!"<<std::endl;
+     std::cout<<"LogWarning(METAnalyzer)" << "MET collection not found!"<<std::endl;
     }
 
+
+    if (pupimetHandle.isValid() && !pupimetHandle->empty())
+      {
+
+        float pupimet_e = pupimetHandle->begin()->sumEt();
+        float pupimet_pt = pupimetHandle->begin()->pt();
+        float pupimet_px = pupimetHandle->begin()->px();
+        float pupimet_py = pupimetHandle->begin()->py();
+        float pupimet_phi = pupimetHandle->begin()->phi();
+        float pupimet_significance = pupimetHandle->begin()->significance();
+        V_pupimet_e_reco  = pupimet_e;
+        V_pupimet_pt_reco  = pupimet_pt;
+        V_pupimet_px_reco  = pupimet_px;
+        V_pupimet_py_reco  = pupimet_py;
+        V_pupimet_phi_reco  = pupimet_phi;
+        V_pupimet_significance_reco  = pupimet_significance;
+        if (isDebug) std::cout<< "PUPI MET: pt = " << pupimet_pt<< " , phi = " << pupimet_phi<< ", E = " << pupimet_e<< ", px  "<< pupimet_px<<std::endl;
+      }
+
+      else
+        {
+         std::cout<<"LogWarning(METAnalyzer)" << "PUPI MET collection not found!"<<std::endl;
+        }
+
+
+  float genmet_e = (genmetHandle->front()).sumEt();
+  float genmet_pt = (genmetHandle->front()).pt();
+  float genmet_px = (genmetHandle->front()).px();
+  float genmet_py = (genmetHandle->front()).py();
+  float genmet_phi = (genmetHandle->front()).phi();
+  float genmet_significance = (genmetHandle->front()).significance();
+  V_genmet_e_reco  = genmet_e;
+  V_genmet_pt_reco  = genmet_pt;
+  V_genmet_px_reco  = genmet_px;
+  V_genmet_py_reco  = genmet_py;
+  V_genmet_phi_reco  = genmet_phi;
+  V_genmet_significance_reco  = genmet_significance;
+  if (isDebug) std::cout<< "GEN MET: pt = " << genmet_pt<< " , phi = " << genmet_phi<< ", E = " << genmet_e<< ", px  "<< genmet_px<<std::endl;
 
 
   bool pass_reco= false;

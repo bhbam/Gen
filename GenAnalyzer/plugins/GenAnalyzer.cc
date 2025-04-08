@@ -287,6 +287,9 @@ GenAnalyzer::GenAnalyzer(const edm::ParameterSet& iConfig)
    jetCollectionT_      = consumes<reco::PFJetCollection>(iConfig.getParameter<edm::InputTag>("ak4PFJetCollection"));
    tauCollectionT_      = consumes<reco::PFTauCollection>(iConfig.getParameter<edm::InputTag>("tauCollection"));
    metToken_ = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("metCollection"));
+   pupimetToken_ = consumes<reco::PFMETCollection>(iConfig.getParameter<edm::InputTag>("pupimetCollection"));
+   genmetToken_ = consumes<std::vector<reco::GenMET>>(iConfig.getParameter<edm::InputTag>("genmetCollection"));
+
 
 }
 

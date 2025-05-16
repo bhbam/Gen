@@ -40,6 +40,6 @@ process.TFileService = cms.Service("TFileService",
     fileName = cms.string(options.outputFile)
     )
 
-process.load("Gen.GenAnalyzer.GenAnalyzer_cfi")
+process.load("GenAnalyzer.python.GenAnalyzer_cfi")
 
 process.p = cms.Path(process.fevt)
